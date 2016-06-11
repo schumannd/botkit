@@ -173,7 +173,7 @@ controller.on('message_received', function(bot, message) {
     var request = require('request');
 
     var file = fs.createWriteStream("file.jpeg");
-    console.log(message['message']);
+    console.log(message);
     var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
       res.pipe(file);
 
