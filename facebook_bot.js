@@ -125,47 +125,13 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 });
 
 
-controller.hears(['(.*)'], 'message_received', function(bot, message) {
-    console.log(message);
-    controller.storage.users.get(message.user, function(err, user) {
-        if (user && user.name) {
-            bot.reply(message, 'Hello ' + user.name + '!!');
-        } else {
-            bot.reply(message, 'Hello.');
-        }
-    });
-});
-
 
 var request = require('request');
 const http = require('http');
 const https = require('https');
 var fs = require('fs');
 
-// controller.hears(['(.*)'], 'message_received', function(bot, message) {
-
-//     var request = require('request');
-
-//     var file = fs.createWriteStream("file.jpeg");
-//     var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
-//       res.pipe(file);
-
-//       r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
-//         if (err) {
-//           return console.error('upload failed:', err);
-//         }
-
-//         bot.reply(message, body);
-//       });
-
-//       var form = r.form();
-//       form.append("question", "What's the color of my dress?");
-//       form.append("image", fs.createReadStream('file.jpg'));
-
-//     });
-
-// });
-
+THE_image_url = '';
 
 
 controller.on('message_received', function(bot, message) {
@@ -173,7 +139,14 @@ controller.on('message_received', function(bot, message) {
     var request = require('request');
 
     var file = fs.createWriteStream("file.jpeg");
-    console.log(message['attachments'][0]['payload']);
+    THE_image_urlmessage['attachments'][0]['payload']['url'];
+
+});
+
+
+
+controller.hears(['(.*)'], 'message_received', function(bot, message) {
+    console.log(message);
 
     r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
         if (err) {
@@ -185,18 +158,9 @@ controller.on('message_received', function(bot, message) {
 
     var form = r.form();
     form.append("question", "What's the color of my dress?");
-    form.append("image", request(message['attachments'][0]['payload']['url']));
-
-    // var req = http.get(message['attachments'][0]['payload'], function(res) {
-    //   res.pipe(file);
-
-    //   var form = r.form();
-    //   form.append("question", "What's the color of my dress?");
-    //   form.append("image", message['attachments'][0]['payload'][0]);
-
-    // });
-
+    form.append("image", request(THE_image_url));
 });
+
 
 
 controller.hears(['structured'], 'message_received', function(bot, message) {
