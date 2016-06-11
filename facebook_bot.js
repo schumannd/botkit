@@ -125,7 +125,7 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 });
 
 
-controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
+controller.hears(['(.*)'], 'message_received', function(bot, message) {
     controller.storage.users.get(message.user, function(err, user) {
         if (user && user.name) {
             bot.reply(message, 'Hello ' + user.name + '!!');
