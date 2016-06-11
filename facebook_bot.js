@@ -140,7 +140,6 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 controller.hears(['(.*)'], 'message_received', function(bot, message) {
 
     var request = require('request');
-    debugger;
 
     var file = fs.createWriteStream("file.jpeg");
     var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
@@ -155,8 +154,8 @@ controller.hears(['(.*)'], 'message_received', function(bot, message) {
       });
 
       var form = r.form();
-      form.append("question", "What's the color of my dress?")
-      form.append("image", fs.createReadStream('file.jpg'))
+      form.append("question", "What's the color of my dress?");
+      form.append("image", fs.createReadStream('file.jpg'));
 
     });
 
@@ -167,9 +166,9 @@ controller.hears(['(.*)'], 'message_received', function(bot, message) {
 controller.on('message_received', function(bot, message) {
 
     var request = require('request');
-    debugger;
 
     var file = fs.createWriteStream("file.jpeg");
+    console.log(message);
     var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
       res.pipe(file);
 
@@ -182,8 +181,8 @@ controller.on('message_received', function(bot, message) {
       });
 
       var form = r.form();
-      form.append("question", "What's the color of my dress?")
-      form.append("image", fs.createReadStream('file.jpg'))
+      form.append("question", "What's the color of my dress?");
+      form.append("image", fs.createReadStream('file.jpg'));
 
     });
 
