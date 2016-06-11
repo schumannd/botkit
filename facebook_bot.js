@@ -137,6 +137,11 @@ controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
 // });
 
 
+var request = require('request');
+const http = require('http');
+const https = require('https');
+var fs = require('fs');
+
 controller.hears(['(.*)'], 'message_received', function(bot, message) {
 
     var request = require('request');
