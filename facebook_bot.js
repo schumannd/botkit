@@ -173,23 +173,28 @@ controller.on('message_received', function(bot, message) {
     var request = require('request');
 
     var file = fs.createWriteStream("file.jpeg");
-    console.log(message);
-    var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
-      res.pipe(file);
+    console.log(message['attachments'][0]['payload']);
 
-      r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
-        if (err) {
-          return console.error('upload failed:', err);
-        }
+    var form = r.form();
+    form.append("question", "What's the color of my dress?");
+    form.append("image", message['attachments'][0]['payload']);
 
-        bot.reply(message, body);
-      });
+    // var req = http.get(message['attachments'][0]['payload'], function(res) {
+    //   res.pipe(file);
 
-      var form = r.form();
-      form.append("question", "What's the color of my dress?");
-      form.append("image", fs.createReadStream('file.jpg'));
+    //   r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
+    //     if (err) {
+    //       return console.error('upload failed:', err);
+    //     }
 
-    });
+    //     bot.reply(message, body);
+    //   });
+
+    //   var form = r.form();
+    //   form.append("question", "What's the color of my dress?");
+    //   form.append("image", message['attachments'][0]['payload'][0]);
+
+    // });
 
 });
 
