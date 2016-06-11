@@ -135,12 +135,12 @@ MESSAGES = {};
 PICTURES = {};
 
 function check_complete_query(message){
-    if(PICTURES[message['user']] == 'undefined' ||
-        MESSAGES[message['user']] == 'undefined'){
+    if(PICTURES[message['user']] === undefined ||
+        MESSAGES[message['user']] === undefined){
         return;
     }
-    PICTURES[message['user']] = 'undefined';
-    MESSAGES[message['user']] = 'undefined';
+    PICTURES[message['user']] = undefined;
+    MESSAGES[message['user']] = undefined;
 
     r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
         if (err) {
