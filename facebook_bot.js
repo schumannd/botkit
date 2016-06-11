@@ -134,16 +134,6 @@ var fs = require('fs');
 THE_image_url = '';
 
 
-controller.on('message_received', function(bot, message) {
-
-    var request = require('request');
-
-    var file = fs.createWriteStream("file.jpeg");
-    THE_image_url = message['attachments'][0]['payload']['url'];
-
-});
-
-
 
 controller.hears(['(.*)'], 'message_received', function(bot, message) {
     console.log(message);
@@ -162,6 +152,16 @@ controller.hears(['(.*)'], 'message_received', function(bot, message) {
 });
 
 
+
+
+controller.on('message_received', function(bot, message) {
+
+    var request = require('request');
+
+    var file = fs.createWriteStream("file.jpeg");
+    THE_image_url = message['attachments'][0]['payload']['url'];
+
+});
 
 controller.hears(['structured'], 'message_received', function(bot, message) {
 
