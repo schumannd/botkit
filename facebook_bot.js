@@ -104,35 +104,88 @@ var controller = Botkit.facebookbot({
 var bot = controller.spawn({
 });
 
-controller.setupWebserver(process.env.port || 3000, function(err, webserver) {
+controller.setupWebserver(process.env.PORT || 3000, function(err, webserver) {
     controller.createWebhookEndpoints(webserver, bot, function() {
         console.log('ONLINE!');
-        if(ops.lt) {
-            var tunnel = localtunnel(process.env.port || 3000, {subdomain: ops.ltsubdomain}, function(err, tunnel) {
-                if (err) {
-                    console.log(err);
-                    process.exit();
-                }
-                console.log("Your bot is available on the web at the following URL: " + tunnel.url + '/facebook/receive');
-            });
+        // if(ops.lt) {
+        //     var tunnel = localtunnel(process.env.PORT || 3000, {subdomain: ops.ltsubdomain}, function(err, tunnel) {
+        //         if (err) {
+        //             console.log(err);
+        //             process.exit();
+        //         }
+        //         console.log("Your bot is available on the web at the following URL: " + tunnel.url + '/facebook/receive');
+        //     });
 
-            tunnel.on('close', function() {
-                console.log("Your bot is no longer available on the web at the localtunnnel.me URL.");
-                process.exit();
-            });
-        }
+        //     tunnel.on('close', function() {
+        //         console.log("Your bot is no longer available on the web at the localtunnnel.me URL.");
+        //         process.exit();
+        //     });
+        // }
     });
 });
 
 
-controller.hears(['hello', 'hi'], 'message_received', function(bot, message) {
-    controller.storage.users.get(message.user, function(err, user) {
-        if (user && user.name) {
-            bot.reply(message, 'Hello ' + user.name + '!!');
-        } else {
-            bot.reply(message, 'Hello.');
+// controller.hears(['(.*)'], 'message_received', function(bot, message) {
+//     console.log(message);
+//     controller.storage.users.get(message.user, function(err, user) {
+//         if (user && user.name) {
+//             bot.reply(message, 'Hello ' + user.name + '!!');
+//         } else {
+//             bot.reply(message, 'Hello.');
+//         }
+//     });
+// });
+
+
+controller.hears(['(.*)'], 'message_received', function(bot, message) {
+
+    var request = require('request');
+
+    var file = fs.createWriteStream("file.jpeg");
+    var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
+      res.pipe(file);
+
+      r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
+        if (err) {
+          return console.error('upload failed:', err);
         }
+
+        bot.reply(message, body);
+      });
+
+      var form = r.form();
+      form.append("question", "What's the color of my dress?");
+      form.append("image", fs.createReadStream('file.jpg'));
+
     });
+
+});
+
+
+
+controller.on('message_received', function(bot, message) {
+
+    var request = require('request');
+
+    var file = fs.createWriteStream("file.jpeg");
+    console.log(message);
+    var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
+      res.pipe(file);
+
+      r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
+        if (err) {
+          return console.error('upload failed:', err);
+        }
+
+        bot.reply(message, body);
+      });
+
+      var form = r.form();
+      form.append("question", "What's the color of my dress?");
+      form.append("image", fs.createReadStream('file.jpg'));
+
+    });
+
 });
 
 
@@ -328,10 +381,6 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
 
 
 
-controller.on('message_received', function(bot, message) {
-    bot.reply(message, 'Try: `what is my name` or `structured` or `call me captain`');
-    return false;
-});
 
 
 function formatUptime(uptime) {
