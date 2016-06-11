@@ -139,20 +139,20 @@ function check_complete_query(bot, message){
         MESSAGES[message['user']] === undefined){
         return;
     }
-
-    r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
-        if (err) {
-          return console.error('upload failed:', err);
-        }
-
-        bot.reply(message, body);
-    });
-
-    var form = r.form();
-    form.append("question", MESSAGES[message['user']]);
-    form.append("image", request(PICTURES[message['user']]));
+    formData = {
+      question: MESSAGES[message['user']],
+      image: request(PICTURES[message['user']])
+    }
     PICTURES[message['user']] = undefined;
     MESSAGES[message['user']] = undefined;
+
+    apiRequest = request.post({url:'http://roboteyes-api.herokuapp.com', formData: formData}, function optionalCallback(err, httpResponse, body) {
+      if (err) {
+        return console.error('upload failed:', err);
+      }
+
+      bot.reply(message, body);
+    });
 }
 
 controller.hears(['(.*)'], 'message_received', function(bot, message) {
