@@ -146,7 +146,7 @@ controller.hears(['(.*)'], 'message_received', function(bot, message) {
     var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
       res.pipe(file);
 
-      r = request.post('http://127.0.0.1:5000', function optionalCallback(err, httpResponse, body) {
+      r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
         if (err) {
           return console.error('upload failed:', err);
         }
@@ -173,7 +173,7 @@ controller.on('message_received', function(bot, message) {
     var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
       res.pipe(file);
 
-      r = request.post('http://127.0.0.1:5000', function optionalCallback(err, httpResponse, body) {
+      r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
         if (err) {
           return console.error('upload failed:', err);
         }
