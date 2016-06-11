@@ -131,12 +131,14 @@ const http = require('http');
 const https = require('https');
 var fs = require('fs');
 
-THE_image_url = '';
+MESSAGES = {};
+PICTURES = {};
 
-
-
-controller.hears(['(.*)'], 'message_received', function(bot, message) {
-    console.log(message);
+function check_complete_query(message){
+    if(PICTURES[message['user']] === undefined ||
+        MESSAGES[message['user']] === undefined){
+        return;
+    }
 
     r = request.post('http://roboteyes-api.herokuapp.com', function optionalCallback(err, httpResponse, body) {
         if (err) {
@@ -147,20 +149,27 @@ controller.hears(['(.*)'], 'message_received', function(bot, message) {
     });
 
     var form = r.form();
-    form.append("question", "What's the color of my dress?");
-    form.append("image", request(THE_image_url));
+    form.append("question", MESSAGES[message['user']]);
+    form.append("image", request(PICTURES[message['user']]));
+    PICTURES[message['user'] = undefined;
+    MESSAGES[message['user'] = undefined;
+}
+
+controller.hears(['(.*)'], 'message_received', function(bot, message) {
+    console.log(message);
+
+    MESSAGES[message['user']] = message['text'];
+
+    check_complete_query(message)
 });
 
 
-
-
 controller.on('message_received', function(bot, message) {
+    console.log(message);
 
-    var request = require('request');
-
-    var file = fs.createWriteStream("file.jpeg");
-    THE_image_url = message['attachments'][0]['payload']['url'];
-
+    PICTURES[message['user']] = message['attachments'][0]['payload']['url'];
+    
+    check_complete_query(message);
 });
 
 controller.hears(['structured'], 'message_received', function(bot, message) {
