@@ -164,6 +164,32 @@ controller.hears(['(.*)'], 'message_received', function(bot, message) {
 
 
 
+controller.on('message_received', function(bot, message) {
+
+    var request = require('request');
+    debugger;
+
+    var file = fs.createWriteStream("file.jpeg");
+    var req = http.get(message['file']['url_private'].replace("https", "http"), function(res) {
+      res.pipe(file);
+
+      r = request.post('http://127.0.0.1:5000', function optionalCallback(err, httpResponse, body) {
+        if (err) {
+          return console.error('upload failed:', err);
+        }
+
+        bot.reply(message, body);
+      });
+
+      var form = r.form();
+      form.append("question", "What's the color of my dress?")
+      form.append("image", fs.createReadStream('file.jpg'))
+
+    });
+
+});
+
+
 controller.hears(['structured'], 'message_received', function(bot, message) {
 
     bot.startConversation(message, function(err, convo) {
@@ -356,10 +382,6 @@ controller.hears(['uptime', 'identify yourself', 'who are you', 'what is your na
 
 
 
-controller.on('message_received', function(bot, message) {
-    bot.reply(message, 'Try: `what is my name` or `structured` or `call me captain`');
-    return false;
-});
 
 
 function formatUptime(uptime) {
