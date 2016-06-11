@@ -134,7 +134,7 @@ var fs = require('fs');
 MESSAGES = {};
 PICTURES = {};
 
-function check_complete_query(message){
+function check_complete_query(bot, message){
     if(PICTURES[message['user']] === undefined ||
         MESSAGES[message['user']] === undefined){
         return;
@@ -160,7 +160,7 @@ controller.hears(['(.*)'], 'message_received', function(bot, message) {
 
     MESSAGES[message['user']] = message['text'];
 
-    check_complete_query(message)
+    check_complete_query(bot, message)
 });
 
 
@@ -169,7 +169,7 @@ controller.on('message_received', function(bot, message) {
 
     PICTURES[message['user']] = message['attachments'][0]['payload']['url'];
     
-    check_complete_query(message);
+    check_complete_query(bot, message);
 });
 
 controller.hears(['structured'], 'message_received', function(bot, message) {
