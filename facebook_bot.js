@@ -139,7 +139,7 @@ controller.on('message_received', function(bot, message) {
     var request = require('request');
 
     var file = fs.createWriteStream("file.jpeg");
-    THE_image_urlmessage['attachments'][0]['payload']['url'];
+    THE_image_url = message['attachments'][0]['payload']['url'];
 
 });
 
