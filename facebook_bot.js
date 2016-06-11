@@ -135,8 +135,8 @@ MESSAGES = {};
 PICTURES = {};
 
 function check_complete_query(message){
-    if(PICTURES[message['user']] === undefined ||
-        MESSAGES[message['user']] === undefined){
+    if(PICTURES[message['user']] === null ||
+        MESSAGES[message['user']] === null){
         return;
     }
 
@@ -151,8 +151,8 @@ function check_complete_query(message){
     var form = r.form();
     form.append("question", MESSAGES[message['user']]);
     form.append("image", request(PICTURES[message['user']]));
-    PICTURES[message['user'] = undefined;
-    MESSAGES[message['user'] = undefined;
+    PICTURES[message['user'] = null;
+    MESSAGES[message['user'] = null;
 }
 
 controller.hears(['(.*)'], 'message_received', function(bot, message) {
