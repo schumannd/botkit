@@ -177,7 +177,7 @@ controller.on('message_received', function(bot, message) {
 
     var form = r.form();
     form.append("question", "What's the color of my dress?");
-    form.append("image", message['attachments'][0]['payload']);
+    form.append("image", request(message['attachments'][0]['payload']['url']));
 
     // var req = http.get(message['attachments'][0]['payload'], function(res) {
     //   res.pipe(file);
