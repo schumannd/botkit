@@ -143,6 +143,7 @@ function check_complete_query(bot, message){
       question: MESSAGES[message['user']],
       image: request(PICTURES[message['user']])
     }
+    console.log(formData);
     PICTURES[message['user']] = undefined;
     MESSAGES[message['user']] = undefined;
 
@@ -151,6 +152,7 @@ function check_complete_query(bot, message){
         return console.error('upload failed:', err);
       }
 
+      console.log(body);
       bot.reply(message, body);
     });
 }
