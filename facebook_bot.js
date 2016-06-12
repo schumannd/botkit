@@ -141,7 +141,7 @@ function check_complete_query(bot, message){
         bot.reply(message, 'Now what do you want to know about that picture?');
     }
     else{
-        bot.startTyping(message);
+        bot.reply(message, {"type": "typing"});
 
         formData = {
           question: MESSAGES[message['user']],
