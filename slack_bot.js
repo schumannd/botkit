@@ -91,10 +91,11 @@ var bot = controller.spawn({
 
 controller.hears(['(.*)'], 'file_shared,file_share', function(bot, message) {
 
+    bot.reply(message, "Let me check that real quick ...");
+
     console.log(message);
 
     var file = fs.createWriteStream("file.jpeg");
-
 
     var options = {
       url: message['file']['url_private_download'].replace("https", "http"),
