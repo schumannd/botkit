@@ -135,26 +135,25 @@ MESSAGES = {};
 PICTURES = {};
 
 function check_complete_query(bot, message){
-    if(PICTURES[message['user']] === undefined ||
-        MESSAGES[message['user']] === undefined){
-        return;
+    if(PICTURES[message['user']] === undefined){
+        bot.reply(message, 'Please send me a picture so I can answer questions about it.');
+    }else if(MESSAGES[message['user']] === undefined){
+        bot.reply(message, 'Now what do you want to know about that picture?');
     }
-    formData = {
-      question: MESSAGES[message['user']],
-      image: request(PICTURES[message['user']])
+    else{
+        formData = {
+          question: MESSAGES[message['user']],
+          image: request(PICTURES[message['user']])
+        }
+        MESSAGES[message['user']] = undefined;
+
+        apiRequest = request.post({url:'http://roboteyes-api.herokuapp.com', formData: formData}, function optionalCallback(err, httpResponse, body) {
+          if (err) {
+            return console.error('upload failed:', err);
+          }
+          bot.reply(message, body);
+        });
     }
-    console.log(formData);
-    PICTURES[message['user']] = undefined;
-    MESSAGES[message['user']] = undefined;
-
-    apiRequest = request.post({url:'http://roboteyes-api.herokuapp.com', formData: formData}, function optionalCallback(err, httpResponse, body) {
-      if (err) {
-        return console.error('upload failed:', err);
-      }
-
-      console.log(body);
-      bot.reply(message, body);
-    });
 }
 
 controller.hears(['(.*)'], 'message_received', function(bot, message) {
