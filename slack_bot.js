@@ -92,6 +92,7 @@ var bot = controller.spawn({
 controller.hears(['(.*)'], 'file_shared,file_share', function(bot, message) {
 
     bot.reply(message, "Let me check that real quick ...");
+    bot.startTyping();
 
     console.log(message);
 
