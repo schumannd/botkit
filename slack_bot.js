@@ -88,12 +88,41 @@ var bot = controller.spawn({
     token: process.env.slack_token
 }).startRTM();
 
+MESSAGES = {};
+
+function check_complete_query(bot, message){
+  if(MESSAGES[message['user']] === undefined){
+    bot.reply(message, 'Now what do you want to know about that picture?');
+  }else if(!fs.existsSync(message['user'] + '.jpeg')){
+    bot.reply(message, 'I have not yet recieved a picture that I can analyze.');
+  }
+  else{
+    formData = {
+      image: fs.createReadStream(message['user'] + '.jpeg'),
+      question: MESSAGES[message['user']]
+    }
+
+    apiRequest = request.post({url:'http://roboteyes-api.herokuapp.com', formData: formData}, function optionalCallback(err, httpResponse, body) {
+      if (err) {
+        return console.error('upload failed:', err);
+      }
+
+      bot.reply(message, body);
+    });
+  }
+}
+
+controller.hears(['(.*)'], 'direct_message', function(bot, message) {
+  console.log(message);
+  MESSAGES[message['user']] = message['text'];
+});
+
 
 controller.hears(['(.*)'], 'file_shared,file_share', function(bot, message) {
+    bot.reply(message, "Let's take a look...");
+    bot.startTyping();
 
-    bot.reply(message, "Let me check that real quick ...");
-
-    console.log(message);
+    // console.log(message);
 
     var file = fs.createWriteStream("file.jpeg");
 
@@ -104,31 +133,16 @@ controller.hears(['(.*)'], 'file_shared,file_share', function(bot, message) {
       }
     };
 
-    console.log(options)
-
+    // console.log(options)
     request(options)
-      .pipe(fs.createWriteStream("file.jpeg"))
+      .pipe(fs.createWriteStream(message['user'] + '.jpeg'))
       .on('close', function() {
 
         // http://roboteyes-api.herokuapp.com
-
-        formData = {
-          image: fs.createReadStream('file.jpeg')
-        }
-
         if (message["file"]["comments_count"] > 0) {
-          formData["question"] = message["file"]["initial_comment"]["comment"]
-        } else {
-          formData["question"] = "What do you see?"
+          MESSAGES[message['user']] = message["file"]["initial_comment"]["comment"];
         }
-
-        apiRequest = request.post({url:'http://roboteyes-api.herokuapp.com', formData: formData}, function optionalCallback(err, httpResponse, body) {
-          if (err) {
-            return console.error('upload failed:', err);
-          }
-
-          bot.reply(message, body);
-        });
+        check_complete_query(bot, message);
       });
 
 
