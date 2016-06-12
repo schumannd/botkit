@@ -116,7 +116,7 @@ controller.hears(['(.*)'], 'file_shared,file_share', function(bot, message) {
           image: fs.createReadStream('file.jpeg')
         }
 
-        if (message["file"]["comment_count"] > 0) {
+        if (message["file"]["comments_count"] > 0) {
           formData["question"] = message["file"]["initial_comment"]["comment"]
         } else {
           formData["question"] = "What do you see?"
