@@ -115,16 +115,14 @@ function check_complete_query(bot, message){
 controller.hears(['(.*)'], 'direct_message', function(bot, message) {
   console.log(message);
   MESSAGES[message['user']] = message['text'];
+  check_complete_query(bot, message);
 });
 
 
 controller.hears(['(.*)'], 'file_shared,file_share', function(bot, message) {
     bot.reply(message, "Let's take a look...");
-    bot.startTyping();
 
-    // console.log(message);
-
-    var file = fs.createWriteStream("file.jpeg");
+    var file = fs.createWriteStream(message['user'] + 'jpeg');
 
     var options = {
       url: message['file']['url_private_download'].replace("https", "http"),
@@ -133,7 +131,6 @@ controller.hears(['(.*)'], 'file_shared,file_share', function(bot, message) {
       }
     };
 
-    // console.log(options)
     request(options)
       .pipe(fs.createWriteStream(message['user'] + '.jpeg'))
       .on('close', function() {
